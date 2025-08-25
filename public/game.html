@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>スイーツゲーム</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #eee;
+      flex-direction: column;
+    }
+
+    canvas {
+      border: 1px solid #333;
+      background: url('images/background.png') no-repeat center center;
+      background-size: cover;
+    }
+
+    #score, #timer {
+      font-size: 24px;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 30</div>
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <script src="game.js"></script>
+</body>
+</html>
