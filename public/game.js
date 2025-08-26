@@ -14,7 +14,7 @@ const char = {
   width: 100,
   height: 140,
   x: canvas.width / 2 - 50,
-  y: canvas.height - 150,
+  y: canvas.height - 200,
   speed: 12,
   vy: 0,        // 縦方向速度
   onGround: true
@@ -22,9 +22,9 @@ const char = {
 
 // スイーツ
 const sweetTypes = [
-  {src: 'images/cake.png', points: 10},
-  {src: 'images/macaron.png', points: 5},
-  {src: 'images/cookie.png', points: 2}
+  {src: 'images/cake.png', points: 20},
+  {src: 'images/macaron.png', points: 10},
+  {src: 'images/cookie.png', points: 5}
 ];
 const sweets = [];
 
@@ -42,10 +42,10 @@ function addSweet() {
 
   sweets.push({
     img: img,
-    x: Math.random() * (canvas.width - 50),
-    y: -50,
-    width: 50,
-    height: 50,
+    x: Math.random() * (canvas.width - 70),
+    y: -70,
+    width: 70,
+    height: 70,
     speed: 2 + Math.random() * 3,
     points: type.points
   });
