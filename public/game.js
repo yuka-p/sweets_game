@@ -7,12 +7,17 @@ const timerDisplay = document.getElementById('timer');
 // キャラクター
 const charImg = new Image();
 charImg.src = 'images/fairy.png';
+// 向きを管理するフラグ
+let facingRight = true;
+
 const char = {
-  width: 70,
-  height: 90,
-  x: canvas.width / 2 - 25,
-  y: canvas.height - 100,
-  speed: 10
+  width: 100,
+  height: 140,
+  x: canvas.width / 2 - 50,
+  y: canvas.height - 150,
+  speed: 12,
+  vy: 0,        // 縦方向速度
+  onGround: true
 };
 
 // スイーツ
@@ -50,8 +55,27 @@ function addSweet() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // キャラクター描画
-  ctx.drawImage(charImg, char.x, char.y, char.width, char.height);
+  // --- キャラを描画 ---
+  ctx.save();
+  if (facingRight) {
+    ctx.drawImage(charImg, char.x, char.y, char.width, char.height);
+  } else {
+    ctx.translate(char.x + char.width, char.y); // 左右反転の基準点
+    ctx.scale(-1, 1); // 左右反転
+    ctx.drawImage(charImg, 0, 0, char.width, char.height);
+  }
+  ctx.restore();
+
+   // キャラ縦移動（ジャンプ・重力）
+  char.y += char.vy;
+  char.vy += 0.2; // 重力
+
+  // 地面判定
+  if (char.y + char.height >= canvas.height - 10) {
+    char.y = canvas.height - 10 - char.height;
+    char.vy = 0;
+    char.onGround = true;
+  }
 
   // スイーツ描画
   for (let i = sweets.length - 1; i >= 0; i--) {
@@ -94,9 +118,22 @@ function startTimer() {
 // キャラクター操作
 window.addEventListener('keydown', (e) => {
   if (gameOver) return;
-  if (e.key === 'ArrowLeft') char.x -= char.speed;
-  if (e.key === 'ArrowRight') char.x += char.speed;
 
+  if (e.key === 'ArrowRight') {
+    facingRight = true;  // 右に動くときは右向き
+    char.x += char.speed;
+  } else if (e.key === 'ArrowLeft') {
+    facingRight = false; // 左に動くときは左向き
+    char.x -= char.speed;
+  }
+
+  // ジャンプ
+  if (e.key === ' ' && char.onGround) {
+    char.vy = -8; // 上方向速度
+    char.onGround = false;
+  }
+
+  // 画面端で止める
   if (char.x < 0) char.x = 0;
   if (char.x + char.width > canvas.width) char.x = canvas.width - char.width;
 });
