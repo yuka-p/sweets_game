@@ -10,22 +10,31 @@ charImg.src = 'images/fairy.png';
 // 向きを管理するフラグ
 let facingRight = true;
 
+const groundY = canvas.height - 60; // ← ここで地面の高さを決める
+
 const char = {
   width: 100,
   height: 140,
   x: canvas.width / 2 - 50,
-  y: canvas.height - 200,
+  y: groundY,   // 初期位置を地面に合わせる
   speed: 12,
   vy: 0,        // 縦方向速度
   onGround: true
 };
 
-// スイーツ
+// スイーツ（通常アイテム）
 const sweetTypes = [
-  {src: 'images/cake.png', points: 20},
-  {src: 'images/macaron.png', points: 10},
-  {src: 'images/cookie.png', points: 5}
+  {src: 'images/cake.png', points: 10},
+  {src: 'images/macaron.png', points: 5},
+  {src: 'images/cookie.png', points: 2}
 ];
+
+// マイナスアイテム
+const badTypes = [
+  {src: 'images/poisonapple.png', points: -10}, // 毒リンゴ
+  {src: 'images/banana.png', points: -3}        // バナナの皮
+];
+
 const sweets = [];
 
 // スコア・時間
@@ -36,7 +45,15 @@ let gameOver = false;
 // スイーツ追加
 function addSweet() {
   if (gameOver) return;
-  const type = sweetTypes[Math.floor(Math.random() * sweetTypes.length)];
+
+   let type;
+  if (Math.random() < 0.3) {  
+    // 30%の確率でマイナスアイテム
+    type = badTypes[Math.floor(Math.random() * badTypes.length)];
+  } else {
+    // 70%は普通のスイーツ
+    type = sweetTypes[Math.floor(Math.random() * sweetTypes.length)];
+  }
   const img = new Image();
   img.src = type.src;
 
@@ -71,11 +88,11 @@ function draw() {
   char.vy += 0.2; // 重力
 
   // 地面判定
-  if (char.y + char.height >= canvas.height - 10) {
-    char.y = canvas.height - 10 - char.height;
-    char.vy = 0;
-    char.onGround = true;
-  }
+  if (char.y + char.height >= groundY) {
+  char.y = groundY - char.height;
+  char.vy = 0;
+  char.onGround = true;
+}
 
   // スイーツ描画
   for (let i = sweets.length - 1; i >= 0; i--) {
@@ -142,4 +159,4 @@ window.addEventListener('keydown', (e) => {
 draw();
 startTimer();
 addSweet();
-setInterval(addSweet, 1500); // 1.5秒ごとに新しいスイーツ追加
+setInterval(addSweet, 1000); // 1.0秒ごとに新しいスイーツ追加

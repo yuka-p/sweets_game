@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <title>スイーツゲーム</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+    /* ↑ かわいい系のGoogleフォントを読み込み */
+
     body {
       margin: 0;
       display: flex;
@@ -12,24 +15,73 @@
       height: 100vh;
       background: #eee;
       flex-direction: column;
+      font-family: 'Fredoka One', cursive;
+    }
+
+    /* ▼ここからフレーム用のスタイルを追加 */
+    .game-container {
+      position: relative;
+      width: 400px;   /* canvasと同じ幅 */
+      height: 600px;  /* canvasと同じ高さ */
     }
 
     canvas {
       border: 1px solid #333;
       background: url('images/background.png') no-repeat center center;
       background-size: cover;
+      display: block;
     }
 
-    #score, #timer {
+     /* スコア＆タイマー用 */
+    .hud {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%); /* 中央寄せ */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px; /* ScoreとTimeの間隔 */
       font-size: 24px;
-      margin: 5px;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* 読みやすいように影 */
+      z-index: 20;
+
+      background: rgba(0,0,0,0.3); /* 半透明の背景で可愛く */
+      padding: 10px 30px;       /* 内側の余白を広げる */
+      border-radius: 15px;      /* 角を丸く */
+      min-width: 100px;         /* 最低横幅を確保して改行防止 */
+      white-space: nowrap; /* 強制改行を防ぐ */
+}
+
+.hud div {
+  background: none; /* 個別の枠は消す */
+  padding: 0;
+  min-width: auto;
+}
+    .frame-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      pointer-events: none; /* 下の操作を邪魔しない */
+      z-index: 10;          /* 最前面 */
     }
   </style>
 </head>
 <body>
-  <div id="score">Score: 0</div>
-  <div id="timer">Time: 30</div>
-  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <!-- ▼canvasを囲むコンテナを追加 -->
+  <!-- スコアとタイマーをcanvasの上に重ねる -->   
+  <div class="game-container">
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <div class="hud">
+      <div id="score">Score: 0</div>
+      <div id="timer">Time: 30</div>
+    </div>
+    <img src="images/choco_frame.png" class="frame-top" alt="frame">
+  </div>
+  <!-- ▲ここまで -->
   <script src="game.js"></script>
 </body>
 </html>
