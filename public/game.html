@@ -52,13 +52,13 @@
       border-radius: 15px;      /* 角を丸く */
       min-width: 100px;         /* 最低横幅を確保して改行防止 */
       white-space: nowrap; /* 強制改行を防ぐ */
-}
+    }
 
-.hud div {
-  background: none; /* 個別の枠は消す */
-  padding: 0;
-  min-width: auto;
-}
+    .hud div {
+      background: none; /* 個別の枠は消す */
+      padding: 0;
+      min-width: auto;
+    }
     .frame-top {
       position: absolute;
       top: 0;
@@ -67,6 +67,23 @@
       height: auto;
       pointer-events: none; /* 下の操作を邪魔しない */
       z-index: 10;          /* 最前面 */
+    }
+    /* 操作ボタン */
+    .controls {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 30; /* ゲームより前面に */
+    }
+
+    .controls img {
+      width: 80px;
+      height: 80px;
+      cursor: pointer;
+      user-select: none;
     }
   </style>
 </head>
@@ -80,8 +97,13 @@
       <div id="timer">Time: 30</div>
     </div>
     <img src="images/choco_frame.png" class="frame-top" alt="frame">
+    <!-- ▼操作ボタン -->
+     <div class="controls">
+      <img id="btn-left" src="images/left.png" alt="左">
+      <img id="btn-up" src="images/up.png" alt="上">
+      <img id="btn-right" src="images/right.png" alt="右">
+    </div>
   </div>
-  <!-- ▲ここまで -->
   <script src="game.js"></script>
 </body>
 </html>

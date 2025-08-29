@@ -10,7 +10,7 @@ charImg.src = 'images/fairy.png';
 // 向きを管理するフラグ
 let facingRight = true;
 
-const groundY = canvas.height - 60; // ← ここで地面の高さを決める
+const groundY = canvas.height - 90; // ← ここで地面の高さを決める
 
 const char = {
   width: 100,
@@ -85,7 +85,7 @@ function draw() {
 
    // キャラ縦移動（ジャンプ・重力）
   char.y += char.vy;
-  char.vy += 0.2; // 重力
+  char.vy += 0.3; // 重力
 
   // 地面判定
   if (char.y + char.height >= groundY) {
@@ -132,27 +132,42 @@ function startTimer() {
   }, 1000);
 }
 
-// キャラクター操作
+// キャラクター操作（キーボード）
+let keyMoveInterval = null;
+function startKeyMove(direction) {
+  if (keyMoveInterval) return;
+  keyMoveInterval = setInterval(() => {
+    if (direction === "left") moveLeft();
+    if (direction === "right") moveRight();
+  }, 50);
+}
+function stopKeyMove() {
+  clearInterval(keyMoveInterval);
+  keyMoveInterval = null;
+}
+
 window.addEventListener('keydown', (e) => {
   if (gameOver) return;
 
   if (e.key === 'ArrowRight') {
-    facingRight = true;  // 右に動くときは右向き
-    char.x += char.speed;
+    facingRight = true;
+    startKeyMove("right");
   } else if (e.key === 'ArrowLeft') {
-    facingRight = false; // 左に動くときは左向き
-    char.x -= char.speed;
+    facingRight = false;
+    startKeyMove("left");
   }
 
   // ジャンプ
   if (e.key === ' ' && char.onGround) {
-    char.vy = -8; // 上方向速度
+    char.vy = -8;
     char.onGround = false;
   }
+});
 
-  // 画面端で止める
-  if (char.x < 0) char.x = 0;
-  if (char.x + char.width > canvas.width) char.x = canvas.width - char.width;
+window.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    stopKeyMove();
+  }
 });
 
 // 初期化
@@ -160,3 +175,58 @@ draw();
 startTimer();
 addSweet();
 setInterval(addSweet, 1000); // 1.0秒ごとに新しいスイーツ追加
+
+// 操作用ボタン（スマホ＆PC対応、長押し対応）
+let btnMoveInterval = null;
+
+function startBtnMove(direction) {
+  if (btnMoveInterval) return;
+  btnMoveInterval = setInterval(() => {
+    if (direction === "left") moveLeft();
+    if (direction === "right") moveRight();
+  }, 50);
+}
+
+function stopBtnMove() {
+  clearInterval(btnMoveInterval);
+  btnMoveInterval = null;
+}
+
+// 左ボタン
+document.getElementById("btn-left").addEventListener("touchstart", () => startBtnMove("left"));
+document.getElementById("btn-left").addEventListener("mousedown", () => startBtnMove("left"));
+document.getElementById("btn-left").addEventListener("touchend", stopBtnMove);
+document.getElementById("btn-left").addEventListener("mouseup", stopBtnMove);
+
+// 右ボタン
+document.getElementById("btn-right").addEventListener("touchstart", () => startBtnMove("right"));
+document.getElementById("btn-right").addEventListener("mousedown", () => startBtnMove("right"));
+document.getElementById("btn-right").addEventListener("touchend", stopBtnMove);
+document.getElementById("btn-right").addEventListener("mouseup", stopBtnMove);
+
+// ジャンプ（単発）
+document.getElementById("btn-up").addEventListener("touchstart", jump);
+document.getElementById("btn-up").addEventListener("mousedown", jump);
+
+// --- 移動関数 ---
+function moveLeft() {
+  if (gameOver) return;
+  facingRight = false;
+  char.x -= char.speed;
+  if (char.x < 0) char.x = 0;
+}
+
+function moveRight() {
+  if (gameOver) return;
+  facingRight = true;
+  char.x += char.speed;
+  if (char.x + char.width > canvas.width) char.x = canvas.width - char.width;
+}
+
+function jump() {
+  if (gameOver) return;
+  if (char.onGround) {
+    char.vy = -8;
+    char.onGround = false;
+  }
+}
